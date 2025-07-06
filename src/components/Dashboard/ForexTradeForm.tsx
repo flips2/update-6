@@ -871,8 +871,8 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
           </div>
         </div>
 
-        {/* P&L, Margin, and Commission */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* P&L, Margin, and Commission - Fixed Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">
               P&L (USD) *
@@ -906,7 +906,10 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
               Auto-calculated from lot size, price, and leverage
             </p>
           </div>
+        </div>
 
+        {/* Commission Field - Separate Row for Better Alignment */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">
               Commission (USD)
@@ -924,6 +927,8 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
               Broker commission fees
             </p>
           </div>
+          {/* Empty div to maintain grid alignment */}
+          <div></div>
         </div>
 
         {/* Entry Side Toggle */}
