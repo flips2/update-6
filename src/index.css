@@ -1,0 +1,381 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Enhanced scrollbar styles */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-slate-600 {
+  scrollbar-color: #475569 transparent;
+}
+
+.scrollbar-track-slate-800 {
+  scrollbar-color: #475569 #1e293b;
+}
+
+/* Webkit scrollbar styles for better browser support */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: linear-gradient(to bottom, #1e293b, #0f172a);
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #64748b, #475569);
+  border-radius: 4px;
+  border: 1px solid #334155;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #94a3b8, #64748b);
+}
+
+/* Custom scrollbar with glow effect - MAIN SCROLLBAR */
+.scrollbar-glow {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.6) rgba(30, 41, 59, 0.3);
+}
+
+.scrollbar-glow::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-glow::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 4px;
+  backdrop-filter: blur(8px);
+}
+
+.scrollbar-glow::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(147, 51, 234, 0.6));
+  border-radius: 4px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.scrollbar-glow::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8));
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+/* Main site scrollbar - Enhanced with modern design */
+.main-site-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.7) rgba(15, 23, 42, 0.2);
+}
+
+.main-site-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-site-scrollbar::-webkit-scrollbar-track {
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+  border-radius: 6px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.main-site-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.8), 
+    rgba(168, 85, 247, 0.8), 
+    rgba(236, 72, 153, 0.8)
+  );
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 0 15px rgba(99, 102, 241, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-site-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 1), 
+    rgba(168, 85, 247, 1), 
+    rgba(236, 72, 153, 1)
+  );
+  box-shadow: 
+    0 0 20px rgba(99, 102, 241, 0.6),
+    0 0 30px rgba(168, 85, 247, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: scaleY(1.1);
+}
+
+.main-site-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(135deg, 
+    rgba(79, 70, 229, 1), 
+    rgba(147, 51, 234, 1), 
+    rgba(219, 39, 119, 1)
+  );
+  box-shadow: 
+    0 0 25px rgba(99, 102, 241, 0.8),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Corner scrollbar styling */
+.main-site-scrollbar::-webkit-scrollbar-corner {
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 6px;
+}
+
+/* Sydney Chat Enhanced Scrollbar - Only visible on hover */
+.sydney-chat-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.sydney-chat-scrollbar:hover {
+  scrollbar-color: rgba(147, 51, 234, 0.6) rgba(30, 41, 59, 0.3);
+}
+
+.sydney-chat-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sydney-chat-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.sydney-chat-scrollbar:hover::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.sydney-chat-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.sydney-chat-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.7), rgba(168, 85, 247, 0.7));
+  box-shadow: 0 0 8px rgba(147, 51, 234, 0.4);
+}
+
+.sydney-chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.9), rgba(168, 85, 247, 0.9));
+  box-shadow: 0 0 12px rgba(147, 51, 234, 0.6);
+}
+
+/* Remove number input spinners/arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Specific class for number inputs without spinners */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Enhanced button animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-12deg);
+  }
+}
+
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: translateX(-100%) skewX(-12deg);
+  transition: transform 0.6s;
+}
+
+.shimmer-effect:hover::before {
+  animation: shimmer 0.6s ease-out;
+}
+
+/* Glass morphism effects */
+.glass-morphism {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Enhanced focus states */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 
+    0 0 0 2px rgba(59, 130, 246, 0.5),
+    0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+/* Custom selection colors */
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: white;
+}
+
+::-moz-selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: white;
+}
+
+/* Enhanced Markdown formatting styles for Sydney's responses */
+.markdown-content {
+  line-height: 1.6;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #f1f5f9;
+}
+
+.markdown-content h1 {
+  font-size: 1.25rem;
+  color: #3b82f6;
+}
+
+.markdown-content h2 {
+  font-size: 1.125rem;
+  color: #60a5fa;
+}
+
+.markdown-content h3 {
+  font-size: 1rem;
+  color: #93c5fd;
+}
+
+.markdown-content strong,
+.markdown-content b {
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.markdown-content em,
+.markdown-content i {
+  font-style: italic;
+  color: #e2e8f0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.markdown-content li {
+  margin: 0.25rem 0;
+  color: #e2e8f0;
+}
+
+.markdown-content p {
+  margin: 0.5rem 0;
+  color: #e2e8f0;
+}
+
+.markdown-content code {
+  background-color: rgba(100, 116, 139, 0.2);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  font-size: 0.875em;
+  color: #fbbf24;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #cbd5e1;
+}
+
+/* Numbered list styling */
+.markdown-content li span {
+  color: #3b82f6;
+  font-weight: 600;
+}
