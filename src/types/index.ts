@@ -42,6 +42,7 @@ export interface Trade {
   // Forex specific fields
   leverage?: number;
   contract_size?: number;
+  commission?: number; // New commission field
   // Crypto specific fields
   futures_symbol?: string;
   margin_mode?: string;
@@ -165,6 +166,7 @@ export interface ExtractedTradeData {
   closeTime?: string;
   reason?: string;
   pnlUsd?: number;
+  commission?: number; // New commission field for AI extraction
   // Forex specific
   leverage?: number;
   contractSize?: number;

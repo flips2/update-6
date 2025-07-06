@@ -267,7 +267,7 @@ Remember this context and refer to it naturally in your responses. Build upon pr
         reader.readAsDataURL(imageFile);
       });
 
-      // Simplified prompt for better quota efficiency
+      // Enhanced prompt to include commission detection
       const prompt = `Analyze this trading table screenshot and extract ALL visible data. This is a trading history table with the following structure:
 
 **TABLE FORMAT (left to right columns):**
@@ -281,13 +281,18 @@ Remember this context and refer to it naturally in your responses. Build upon pr
 8. Position ID or status
 9. Open Time (format: "Jun 16, 8:50:55 PM")
 10. Close Time (format: "Jun 16, 11:41:00 PM")
-11. Additional columns (Swap, Reason, P/L)
+11. Swap, USD (swap fees)
+12. **Commission, USD** - CRITICAL: Extract commission fees from this column
+13. Reason (Stop Loss, Take Profit, etc.)
+14. P/L, USD (profit/loss)
 
 **CRITICAL EXTRACTION RULES:**
 - T/P and S/L are ALWAYS in columns 6 and 7 - extract these numbers even if they look like prices
+- Commission is in column 12 - extract the commission amount (usually negative or positive small numbers)
 - Times are in format "Jun 16, 8:50:55 PM" - convert to ISO format "2024-06-16T20:50:55Z"
 - Numbers may have commas (3,401.188) - extract as numbers without commas
 - Look for +/- in P/L column for profit/loss values
+- Commission values are typically small amounts (like -0.56, 0.00, etc.)
 - The table has NO headers - identify columns by position from left to right
 
 **DATETIME CONVERSION:**
@@ -310,10 +315,11 @@ Return ONLY this JSON structure:
   "openTime": "ISO_datetime_string",
   "closeTime": "ISO_datetime_string",
   "reason": "reason_if_visible",
-  "pnlUsd": profit_loss_number
+  "pnlUsd": profit_loss_number,
+  "commission": commission_amount_from_column_12
 }
 
-MANDATORY: Extract T/P and S/L from columns 6 and 7. Do NOT return null for these if numbers are visible in those positions.`;
+MANDATORY: Extract T/P, S/L from columns 6 and 7, and Commission from column 12. Do NOT return null for these if numbers are visible in those positions.`;
 
       const result = await this.retryWithBackoff(async () => {
         return await this.model.generateContent([
@@ -403,7 +409,8 @@ MANDATORY: Extract T/P and S/L from columns 6 and 7. Do NOT return null for thes
       openTime: this.parseDateTime(data.openTime),
       closeTime: this.parseDateTime(data.closeTime),
       reason: this.normalizeReason(data.reason), // Apply reason normalization
-      pnlUsd: this.parseNumber(data.pnlUsd)
+      pnlUsd: this.parseNumber(data.pnlUsd),
+      commission: this.parseNumber(data.commission) // Add commission parsing
     };
 
     return cleanData;

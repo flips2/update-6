@@ -41,6 +41,7 @@ const EnhancedTradesList: React.FC<EnhancedTradesListProps> = ({
       entry_side: trade.entry_side,
       profit_loss: trade.profit_loss,
       comments: trade.comments,
+      commission: trade.commission || 0, // Include commission in edit form
       // Include session-type specific fields
       ...(sessionType === 'Forex' ? {
         symbol: trade.symbol,
@@ -219,7 +220,7 @@ const EnhancedTradesList: React.FC<EnhancedTradesListProps> = ({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-4 gap-4">
                     <div>
                       <label className="block text-xs text-slate-400 mb-1">Margin</label>
                       <input
@@ -238,6 +239,17 @@ const EnhancedTradesList: React.FC<EnhancedTradesListProps> = ({
                         onChange={(e) => handleInputChange('profit_loss', parseFloat(e.target.value) || 0)}
                         className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
                         step="0.01"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-400 mb-1">Commission</label>
+                      <input
+                        type="number"
+                        value={editFormData.commission || ''}
+                        onChange={(e) => handleInputChange('commission', parseFloat(e.target.value) || 0)}
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
+                        step="0.01"
+                        min="0"
                       />
                     </div>
                     <div>
@@ -317,6 +329,15 @@ const EnhancedTradesList: React.FC<EnhancedTradesListProps> = ({
                         }`}>
                           {trade.entry_side || trade.direction}
                         </span>
+                        {/* Show commission if it exists and is greater than 0 */}
+                        {trade.commission && trade.commission > 0 && (
+                          <>
+                            <span className="text-slate-400">•</span>
+                            <span className="text-orange-400 text-xs">
+                              Commission: {formatCurrency(trade.commission)}
+                            </span>
+                          </>
+                        )}
                       </div>
                       
                       <div className="flex items-center text-sm text-slate-400 mt-1">
@@ -367,6 +388,12 @@ const EnhancedTradesList: React.FC<EnhancedTradesListProps> = ({
                       }`}>
                         {formatCurrency(trade.profit_loss)}
                       </p>
+                      {/* Show net P/L if commission exists */}
+                      {trade.commission && trade.commission > 0 && (
+                        <p className="text-xs text-slate-500">
+                          Net: {formatCurrency(trade.profit_loss - trade.commission)}
+                        </p>
+                      )}
                     </div>
                     
                     <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -45,6 +45,7 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
     contractSize: '100',
     roi: '',
     entrySide: 'Long' as 'Long' | 'Short',
+    commission: '0', // New commission field
     comments: ''
   });
 
@@ -202,7 +203,7 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
       
       console.log('Raw extracted data:', extractedData);
       
-      // Populate form with extracted data including properly formatted dates
+      // Populate form with extracted data including properly formatted dates and commission
       setFormData(prev => ({
         ...prev,
         symbol: extractedData.symbol || '',
@@ -220,6 +221,7 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
         leverage: extractedData.leverage?.toString() || prev.leverage,
         contractSize: extractedData.contractSize?.toString() || prev.contractSize,
         entrySide: extractedData.type === 'Buy' ? 'Long' : 'Short',
+        commission: extractedData.commission?.toString() || '0', // Auto-populate commission
         comments: `Auto-extracted from ${fileName}`
       }));
 
@@ -355,6 +357,12 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
     return '';
   };
 
+  const calculateNetPnL = () => {
+    const pnl = parseFloat(formData.pnlUsd) || 0;
+    const commission = parseFloat(formData.commission) || 0;
+    return pnl - commission;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -388,12 +396,15 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
         }
       };
 
+      // Calculate net P/L after commission
+      const netPnL = calculateNetPnL();
+
       const trade: Omit<Trade, 'id' | 'created_at'> = {
         session_id: sessionId,
         margin: parseFloat(formData.margin),
         roi: parseFloat(calculateROI() || '0'),
         entry_side: formData.entrySide,
-        profit_loss: parseFloat(formData.pnlUsd),
+        profit_loss: netPnL, // Use net P/L after commission
         comments: formData.comments || undefined,
         // Enhanced fields
         symbol: formData.symbol || undefined,
@@ -409,6 +420,8 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
         // Forex specific
         leverage: formData.leverage ? parseFloat(formData.leverage) : undefined,
         contract_size: formData.contractSize ? parseFloat(formData.contractSize) : undefined,
+        // Commission field
+        commission: formData.commission ? parseFloat(formData.commission) : undefined,
       };
 
       console.log('Submitting trade data:', trade); // Debug log
@@ -434,6 +447,7 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
         contractSize: '100',
         roi: '',
         entrySide: 'Long',
+        commission: '0',
         comments: ''
       });
       
@@ -857,8 +871,8 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
           </div>
         </div>
 
-        {/* P&L and Margin */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* P&L, Margin, and Commission */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">
               P&L (USD) *
@@ -890,6 +904,24 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
             />
             <p className="text-xs text-slate-400 mt-1">
               Auto-calculated from lot size, price, and leverage
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              Commission (USD)
+            </label>
+            <input
+              type="number"
+              value={formData.commission}
+              onChange={(e) => handleInputChange('commission', e.target.value)}
+              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              placeholder="0.00"
+              step="0.01"
+              min="0"
+            />
+            <p className="text-xs text-slate-400 mt-1">
+              Broker commission fees
             </p>
           </div>
         </div>
@@ -970,19 +1002,40 @@ const ForexTradeForm: React.FC<ForexTradeFormProps> = ({ onAddTrade, sessionId }
           />
         </div>
 
-        {/* Calculated ROI Display */}
+        {/* Calculated Metrics Display */}
         {formData.margin && formData.pnlUsd && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="bg-slate-700 rounded-lg p-4 border border-slate-600"
           >
-            <div className="flex items-center text-slate-300 mb-2">
-              <span className="text-sm">Calculated ROI: </span>
-              <span className="text-lg font-bold text-blue-400 ml-2">
-                {calculateROI()}%
-              </span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-sm text-slate-400">Calculated ROI</p>
+                <p className="text-lg font-bold text-blue-400">
+                  {calculateROI()}%
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-slate-400">Gross P/L</p>
+                <p className={`text-lg font-bold ${parseFloat(formData.pnlUsd) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {formatCurrency(parseFloat(formData.pnlUsd) || 0)}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-slate-400">Net P/L (After Commission)</p>
+                <p className={`text-lg font-bold ${calculateNetPnL() >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {formatCurrency(calculateNetPnL())}
+                </p>
+              </div>
             </div>
+            {parseFloat(formData.commission) > 0 && (
+              <div className="mt-2 text-center">
+                <p className="text-xs text-slate-500">
+                  Commission: -{formatCurrency(parseFloat(formData.commission))}
+                </p>
+              </div>
+            )}
           </motion.div>
         )}
 

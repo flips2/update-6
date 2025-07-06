@@ -14,6 +14,7 @@ export const exportToJSON = (session: TradingSession, trades: Trade[], stats: Se
       roi: trade.roi,
       entry_side: trade.entry_side,
       profit_loss: trade.profit_loss,
+      commission: trade.commission || 0, // Include commission in export
       comments: trade.comments,
       created_at: trade.created_at,
     })),
@@ -53,7 +54,7 @@ export const exportToExcel = (session: TradingSession, trades: Trade[], stats: S
   const summaryWS = XLSX.utils.aoa_to_sheet(summaryData);
   XLSX.utils.book_append_sheet(wb, summaryWS, 'Summary');
   
-  // Enhanced Trades Sheet with all detailed fields
+  // Enhanced Trades Sheet with all detailed fields including commission
   const tradesData = [
     [
       'Date',
@@ -70,6 +71,8 @@ export const exportToExcel = (session: TradingSession, trades: Trade[], stats: S
       'Open Time',
       'Close Time',
       'P&L (USD)',
+      'Commission (USD)', // Add commission column
+      'Net P&L (USD)', // Add net P&L column
       'Margin (USD)',
       'Entry Side',
       'ROI %',
@@ -100,6 +103,9 @@ export const exportToExcel = (session: TradingSession, trades: Trade[], stats: S
       return num !== undefined && num !== null ? num : '';
     };
 
+    const commission = trade.commission || 0;
+    const netPnL = trade.profit_loss - commission;
+
     tradesData.push([
       new Date(trade.created_at).toLocaleDateString(),
       trade.symbol || trade.futures_symbol || '', // Symbol (Forex) or Futures Symbol (Crypto)
@@ -115,6 +121,8 @@ export const exportToExcel = (session: TradingSession, trades: Trade[], stats: S
       formatDateTime(trade.open_time), // Open Time
       formatDateTime(trade.close_time), // Close Time
       formatNumber(trade.profit_loss || trade.realized_pnl), // P&L (USD) or Realized PNL
+      formatNumber(commission), // Commission (USD)
+      formatNumber(netPnL), // Net P&L (USD)
       formatNumber(trade.margin), // Margin (USD)
       trade.entry_side || trade.direction || '', // Entry Side or Direction
       formatNumber(trade.roi), // ROI %
@@ -149,6 +157,8 @@ export const exportToExcel = (session: TradingSession, trades: Trade[], stats: S
     { wch: 18 }, // Open Time
     { wch: 18 }, // Close Time
     { wch: 12 }, // P&L (USD)
+    { wch: 15 }, // Commission (USD)
+    { wch: 15 }, // Net P&L (USD)
     { wch: 12 }, // Margin (USD)
     { wch: 12 }, // Entry Side
     { wch: 10 }, // ROI %
@@ -200,10 +210,10 @@ export const exportToExcel = (session: TradingSession, trades: Trade[], stats: S
             right: { style: 'thin', color: { rgb: 'CCCCCC' } },
           },
         };
-        // Format currency columns
-        if ([13, 14].includes(c)) cell.z = '$0.00'; // P&L (USD), Margin (USD)
+        // Format currency columns (P&L, Commission, Net P&L, Margin)
+        if ([13, 14, 15, 16].includes(c)) cell.z = '$0.00';
         // Format percentage columns
-        if ([16].includes(c)) cell.z = '0.00%'; // ROI %
+        if ([18].includes(c)) cell.z = '0.00%'; // ROI %
       }
     }
   }
@@ -237,7 +247,7 @@ export const exportDetailedTradesToExcel = (session: TradingSession, trades: Tra
     [
       'Date', 'Symbol', 'Type', 'Volume (Lot)', 'Open Price', 'Close Price', 'Leverage',
       'Take Profit (TP)', 'Stop Loss (SL)', 'Position', 'Close Reason', 'Open Time', 'Close Time',
-      'P&L (USD)', 'Margin (USD)', 'Entry Side', 'ROI %'
+      'P&L (USD)', 'Commission (USD)', 'Net P&L (USD)', 'Margin (USD)', 'Entry Side', 'ROI %'
     ]
   ];
   const formatValue = (val: string | number | undefined | null) => {
@@ -245,6 +255,9 @@ export const exportDetailedTradesToExcel = (session: TradingSession, trades: Tra
     return val.toString();
   };
   trades.forEach(trade => {
+    const commission = trade.commission || 0;
+    const netPnL = trade.profit_loss - commission;
+    
     tradesData.push([
       formatValue(new Date(trade.created_at).toLocaleDateString()),
       formatValue(trade.symbol || trade.futures_symbol),
@@ -260,6 +273,8 @@ export const exportDetailedTradesToExcel = (session: TradingSession, trades: Tra
       formatValue(trade.open_time),
       formatValue(trade.close_time),
       formatValue(trade.profit_loss),
+      formatValue(commission),
+      formatValue(netPnL),
       formatValue(trade.margin),
       formatValue(trade.entry_side || trade.direction),
       formatValue(trade.roi)
